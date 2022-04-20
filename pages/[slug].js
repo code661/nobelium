@@ -5,6 +5,11 @@ import { createHash } from 'crypto'
 
 const BlogPost = ({ post, blockMap, emailHash }) => {
   if (!post) return null
+  Object.entries(blockMap.block).forEach(([key, value]) => {
+    
+    console.log(value.value)
+    
+  })
   return (
     <Layout
       blockMap={blockMap}
@@ -15,7 +20,7 @@ const BlogPost = ({ post, blockMap, emailHash }) => {
   )
 }
 
-export async function getStaticPaths () {
+export async function getStaticPaths() {
   const posts = await getAllPosts({ includePages: true })
   return {
     paths: posts.map(row => `${BLOG.path}/${row.slug}`),
@@ -23,7 +28,7 @@ export async function getStaticPaths () {
   }
 }
 
-export async function getStaticProps ({ params: { slug } }) {
+export async function getStaticProps({ params: { slug } }) {
   const posts = await getAllPosts({ includePages: true })
   const post = posts.find(t => t.slug === slug)
   const blockMap = await getPostBlocks(post.id)
@@ -32,6 +37,22 @@ export async function getStaticProps ({ params: { slug } }) {
     .digest('hex')
     .trim()
     .toLowerCase()
+
+  Object.entries(blockMap.block).forEach(([key, value]) => {
+    const createUser = [
+      "‣",
+      [
+        [
+          "u",
+          value.value.created_by_id
+        ]
+      ]]
+    const title = value.value?.properties?.title
+    console.log(value.value)
+    if (Array.isArray(title)) {
+      title.push(createUser)
+    }
+  })
 
   return {
     props: { post, blockMap, emailHash },
