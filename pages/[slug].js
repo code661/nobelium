@@ -2,16 +2,29 @@ import Layout from '@/layouts/layout'
 import { getAllPosts, getPostBlocks } from '@/lib/notion'
 import BLOG from '@/blog.config'
 import { createHash } from 'crypto'
+import { ReactCusdis } from 'react-cusdis'
 
-const BlogPost = ({ post, blockMap, emailHash }) => {
+const BlogPost = ({ post, blockMap, emailHash, slug }) => {
   if (!post) return null
   return (
-    <Layout
-      blockMap={blockMap}
-      frontMatter={post}
-      emailHash={emailHash}
-      fullWidth={post.fullWidth}
-    />
+    <>
+      <Layout
+        blockMap={blockMap}
+        frontMatter={post}
+        emailHash={emailHash}
+        fullWidth={post.fullWidth}
+      />
+      <div className="max-w-2xl mx-auto py-4">
+       <ReactCusdis
+        attrs={{
+          host: 'https://cusdis.com',
+          appId: '370347dc-c7b3-4a5a-b289-4806233cd631',
+          pageId: slug,
+          pageTitle: slug
+        }}
+      />
+</div>
+    </>
   )
 }
 
@@ -49,7 +62,7 @@ export async function getStaticProps ({ params: { slug } }) {
   })
 
   return {
-    props: { post, blockMap, emailHash },
+    props: { post, blockMap, emailHash, slug },
     revalidate: 1
   }
 }
